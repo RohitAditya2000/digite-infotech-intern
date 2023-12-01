@@ -1,0 +1,43 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# Sample dataset (replace with your actual data)
+data = {
+    'Age': [25, 30, 35, 22, 28, 32],
+    'Income': [50000, 60000, 75000, 48000, 55000, 70000],
+    'Gender': [0, 0, 0, 1, 1, 1],  # 0 for Male, 1 for Female
+    'Insurance': [1, 1, 1, 0, 0, 0]
+}
+
+df = pd.DataFrame(data)
+
+# Split the data into features (X) and target variable (y)
+X = df.drop('Insurance', axis=1)
+y = df['Insurance']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train a model without considering gender
+model_without_gender = LogisticRegression()
+model_without_gender.fit(X_train[['Age', 'Income']], y_train)
+
+# Make predictions on the test set without gender
+y_pred_without_gender = model_without_gender.predict(X_test[['Age', 'Income']])
+
+# Calculate accuracy without considering gender
+accuracy_without_gender = accuracy_score(y_test, y_pred_without_gender)
+print(f'Model Accuracy Without Considering Gender: {accuracy_without_gender * 100:.2f}%')
+
+# Train a model considering gender
+model_with_gender = LogisticRegression()
+model_with_gender.fit(X_train, y_train)
+
+# Make predictions on the test set considering gender
+y_pred_with_gender = model_with_gender.predict(X_test)
+
+# Calculate accuracy considering gender
+accuracy_with_gender = accuracy_score(y_test, y_pred_with_gender)
+print(f'Model Accuracy Considering Gender: {accuracy_with_gender * 100:.2f}%')
